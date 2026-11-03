@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 
 function App() {
@@ -6,27 +5,34 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-
-
   // Mission 1: Create a function to fetch users
-  async function fetchUsers(){
-       setIsLoading(true);
-       setError(null);
-       try{
-        const response = await fetch("https://randomuser.me/api/?results=5");
-        if(response.ok){
-            const data = await response.json();
-            setUsers(data.results);
-            setIsLoading(false);
-        }
+  async function fetchUsers() {
+    setIsLoading(true);
+    setError(null);
 
-       }catch(error){
-        setError(error.message || "Something went wrong.");
-        setIsLoading(false);
-       }
+    try {
+      const response = await fetch(
+        "https://randomuser.me/api/?results=5"
+      );
+
+      // Mission 2: Handle unsuccessful HTTP responses
+      if (!response.ok) {
+        throw new Error("Failed to fetch users.");
+      }
+
+      const data = await response.json();
+      setUsers(data.results);
+
+    } catch (err) {
+      setError(err.message || "Something went wrong.");
+
+    } finally {
+      // Mission 3: Reset loading state
+      setIsLoading(false);
+    }
   }
 
-  // Mission 1: Call the function using useEffect
+  // Mission 4: Call the function using useEffect
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -42,19 +48,28 @@ function App() {
 
       {/* Display loading message */}
       {isLoading && <p>Loading users...</p>}
+
       {/* Display error message */}
       {error && <p>Error: {error}</p>}
 
       {/* Display Refresh button */}
-      <button onClick={handleRefresh}>Refresh</button>
+      <button onClick={handleRefresh} disabled={isLoading}>
+        {isLoading ? "Refreshing..." : "Refresh"}
+      </button>
 
-      {/* Display users using map() */}
+      {/* Display users */}
       <ul>
-        {users.map((user, index)=>(
-            <li key={index}>
-              <h2>{user.name.first} {user.name.last}</h2>
-              <p>{user.email}</p>
-            </li>
+        {users.map((user) => (
+          <li key={user.login.uuid}>
+            <h2>
+              {user.name.first} {user.name.last}
+            </h2>
+
+            <p>{user.email}</p>
+
+            {/* Mission 6: Display city */}
+            <p>City: {user.location.city}</p>
+          </li>
         ))}
       </ul>
     </main>
