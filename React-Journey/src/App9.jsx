@@ -10,9 +10,14 @@ function App() {
   const [name, setName] = useState("");
   const [degree, setDegree] = useState("");
   const [validationMessage, setValidationMessage] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
   const [nextStudentId, setNextStudentId] = useState(
     () => Math.max(...students.map((student) => student.id)) + 1,
   );
+  const sortedStudents = [...students].sort((first, second) => {
+    const comparison = first.name.localeCompare(second.name);
+    return sortOrder === "asc" ? comparison : -comparison;
+  });
 
   function addStudent() {
     const trimmedName = name.trim();
@@ -100,33 +105,54 @@ function App() {
       <section>
         <h2>Student List</h2>
 
-        <ul>
-          {students.map((student) => (
-            <li key={student.id}>
-              <span>{student.name}</span>
-              <span>{student.degree}</span>
-              <button
-                onClick={() => {
-                  const newName = window.prompt(
-                    "Enter student name",
-                    student.name,
-                  );
-                  if (newName === null) return;
-                  const newDegree = window.prompt(
-                    "Enter student degree",
-                    student.degree,
-                  );
-                  if (newDegree !== null) {
-                    editStudent(student.id, newName, newDegree);
-                  }
-                }}
-              >
-                Edit
-              </button>
-              <button onClick={() => deleteStudent(student.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
+        <div>
+          <button
+            type="button"
+            onClick={() => setSortOrder("asc")}
+            aria-pressed={sortOrder === "asc"}
+          >
+            A–Z
+          </button>
+          <button
+            type="button"
+            onClick={() => setSortOrder("desc")}
+            aria-pressed={sortOrder === "desc"}
+          >
+            Z–A
+          </button>
+        </div>
+
+        {sortedStudents.length === 0 ? (
+          <p>No students found.</p>
+        ) : (
+          <ul>
+            {sortedStudents.map((student) => (
+              <li key={student.id}>
+                <span>{student.name}</span>
+                <span>{student.degree}</span>
+                <button
+                  onClick={() => {
+                    const newName = window.prompt(
+                      "Enter student name",
+                      student.name,
+                    );
+                    if (newName === null) return;
+                    const newDegree = window.prompt(
+                      "Enter student degree",
+                      student.degree,
+                    );
+                    if (newDegree !== null) {
+                      editStudent(student.id, newName, newDegree);
+                    }
+                  }}
+                >
+                  Edit
+                </button>
+                <button onClick={() => deleteStudent(student.id)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </main>
   );
