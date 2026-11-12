@@ -64,7 +64,7 @@ function App() {
         {/* Display filtered users here */}
         <ul>
             {filteredUsers.map((user, index) => (
-                <li key = {index}>{user.name.first} {user.name.last}</li>
+                <li key = {user.login.uuid}>{user.name.first} {user.name.last}</li>
             ))}
         </ul>
         
