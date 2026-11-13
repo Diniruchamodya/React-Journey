@@ -1,6 +1,6 @@
-import Navbar from "./components/Navbar";
-import Profile from "./components/Profile";
-import { ThemeProvider } from "./context/ThemeContext";
+import Navbar from "../../Room19/src/components/Navbar";
+import Profile from "../../Room19/src/components/Profile";
+import { ThemeProvider } from "../../Room19/src/context/ThemeContext";
 
 function App() {
 
